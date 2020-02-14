@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>首页</title>
+
+    <link rel="stylesheet" type="text/css" href="/static/css/main.css">
+</head>
+<body>
+<div class="center">
+    <h1>这里是首页</h1>
+    <img src="/static/img/lbj.jpg" alt="">
+    <div>
+        <ul>
+            {% for book in books %}
+           {# <a href="/detail/{{book.id}}/"><li>{{book.title}}--{{book.price}}--{{book.pub_date}}</li></a> #}
+            <a href="{% url 'booktest:detail' book.id %}">
+                <li>{{book.title}}--{{book.price}}--{{book.pub_date}}</li>
+            </a>
+
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+
+</body>
+</html>
