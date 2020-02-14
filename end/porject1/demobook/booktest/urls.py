@@ -10,5 +10,7 @@ urlpatterns = [
     url(r'^deletehero/(\d+)/$', views.deletehero, name='deletehero'),
     url(r'^createdbook/(\d+)/$', views.createdbook, name='createdbook'),
     url(r'^etidhero/(\d+)/$', views.etidhero, name="etidhero"),
+    url(r'^addbook/$', views.addbook, name="addbook"),
+    url(r'^etidbook/(\d+)/$', views.etidbook, name="etidbook"),
 
 ]
