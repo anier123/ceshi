@@ -9,7 +9,9 @@
     <div>
         <ul>
             {% for hero in books.hero_set.all %}
-                <li>{{hero.name}}--{{hero.gender}}--{{hero.conten}}--{{hero.book}} <a href="{% url 'booktest:deletehero' hero.id %}">删除</a></li>
+                <li>{{hero.name}}--{{hero.gender}}--{{hero.conten}}--{{hero.book}}
+                    <a href="{% url 'booktest:etidhero' hero.id %}">编辑</a>
+                    <a href="{% url 'booktest:deletehero' hero.id %}">删除</a></li>
             {% endfor %}
         </ul>
     </div>

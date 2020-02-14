@@ -37,7 +37,7 @@ def deletehero(request, heroid):
     return redirect(to=url)
 
 
-def createdbook(request,bookid):
+def createdbook(request, bookid):
     if request.method == "GET":
         return render(request, 'createdbook.html')
     elif request.method == "POST":
@@ -47,5 +47,18 @@ def createdbook(request,bookid):
         hero.gender = request.POST.get("sex")
         hero.book = Book.objects.get(id=bookid)
         hero.save()
-        url = reverse("booktest:detail",args=(bookid,))
+        url = reverse("booktest:detail", args=(bookid,))
+        return redirect(to=url)
+
+
+def etidhero(request, heroid):
+    hero = Hero.objects.get(id=heroid)
+    if request.method == "GET":
+        return render(request, 'etidhero.html', {"hero": hero})
+    elif request.method == "POST":
+        hero.name = request.POST.get("heroname")
+        hero.conten = request.POST.get("heroconten")
+        hero.gender = request.POST.get("sex")
+        hero.save()
+        url = reverse("booktest:detail", args=(hero.book.id,))
         return redirect(to=url)
