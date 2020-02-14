@@ -13,11 +13,13 @@
     <div>
         <ul>
             {% for book in books %}
+            <li>
            {# <a href="/detail/{{book.id}}/"><li>{{book.title}}--{{book.price}}--{{book.pub_date}}</li></a> #}
             <a href="{% url 'booktest:detail' book.id %}">
-                <li>{{book.title}}--{{book.price}}--{{book.pub_date}}</li>
+                {{book.title}}--{{book.price}}--{{book.pub_date}}
             </a>
-
+            <a href="{% url 'booktest:deletebook' book.id %}">删除</a>
+            </li>
             {% endfor %}
         </ul>
     </div>
