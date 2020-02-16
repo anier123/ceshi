@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.contrib.admin import ModelAdmin
 # Register your models here.
 
-from .models import Book, Hero
+from .models import Book, Hero, User, Account, Concact
 
 
 class AdminInlines(admin.StackedInline):
@@ -17,7 +17,7 @@ class BookAdmin(ModelAdmin):
     inlines = [AdminInlines]
 
 
-admin.site.register(Book,BookAdmin)
+admin.site.register(Book, BookAdmin)
 
 
 class HeroAdmin(ModelAdmin):
@@ -25,4 +25,7 @@ class HeroAdmin(ModelAdmin):
     search_fields = ('name', 'book')
 
 
-admin.site.register(Hero,HeroAdmin)
+admin.site.register(Hero, HeroAdmin)
+admin.site.register(User)
+admin.site.register(Account)
+admin.site.register(Concact)

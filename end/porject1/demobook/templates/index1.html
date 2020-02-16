@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>投票首页</title>
+    <link rel="stylesheet" href="/static/css/main.css">
+</head>
+<body>
+<div class="center">
+    <h1>投票信息总汇</h1>
+    <div>
+        {% for mess in message %}
+            <ul>
+                <a href="{% url 'polls:detail1' mess.id %}">
+                    <li>{{mess.id}}.{{mess.message}}</li>
+                </a>
+
+            </ul>
+        {% endfor %}
+    </div>
+</div>
+
+</body>
+</html>
