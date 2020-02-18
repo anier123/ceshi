@@ -24,7 +24,10 @@ SECRET_KEY = '*$a#+!7ug94aws1ne)-x@cp6&0q9w9a=--)v%p1la6@ekb^vl^'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+# DEBUG = False
+
+
+ALLOWED_HOSTS = ["*"]
 
 # Application definition
 
@@ -37,13 +40,14 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'booktest',
     'polls',
+    'download'
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    # 'django.middleware.csrf.CsrfViewMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -116,3 +120,5 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+
+AUTH_USER_MODEL = 'polls.User'

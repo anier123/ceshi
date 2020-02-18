@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>首页</title>
+
+    <link rel="stylesheet" type="text/css" href="/static/css/main.css">
+</head>
+<body>
+<div class="center">
+    {% block header %}
+        <div>
+            {% if request.user and request.user.username != '' %}
+                用户名：{{request.user}} <a href="{% url 'polls:logout' %}">退出</a>
+            {% else %}
+            <a href="{% url 'polls:login' %}">登陆</a><a href="{% url 'polls:regist' %}">注册</a>
+            {% endif %}
+        </div>
+    {% endblock %}
+
+    {% block body %}
+        这里是身体
+    {% endblock %}
+
+    {% block footer %}
+        这里是底部
+    {% endblock %}
+</div>
+</body>
+</html>
