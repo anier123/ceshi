@@ -2,6 +2,8 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.core.paginator import Paginator, Page
 from .models import *
+
+
 # 一个Page中有  object_list代表当前页的所有对象
 # has_next 是不是有下一页
 # has_previous 是否有上一页
@@ -21,11 +23,21 @@ from .models import *
 
 def index(request):
     ads = Ads.objects.all()
-    articles = Article.objects.all()
+
+    typepage = request.GET.get("type")
+    year = None
+    month = None
+    if typepage == "date":
+        year = request.GET.get("year")
+        month = request.GET.get("month")
+        articles = Article.objects.filter(create_time__year=year, create_time__month=month).order_by("-create_time")
+    else:
+        articles = Article.objects.all()
+
     paginator = Paginator(articles, 2)
     num = request.GET.get("pagenum", 1)
     page = paginator.get_page(num)
-    return render(request, 'index.html', {"ads": ads, "page": page})
+    return render(request, 'index.html', {"ads": ads, "page": page, "type": typepage, "year": year, "month": month})
     # return HttpResponse("首页")
 
 
