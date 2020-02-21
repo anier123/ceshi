@@ -19,6 +19,7 @@ from django.conf.urls import url
 from .settings import MEDIA_ROOT
 from django.views.static import serve
 
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('ueditor/', include('DjangoUeditor.urls')),

@@ -1,7 +1,8 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, reverse
 from django.http import HttpResponse
 from django.core.paginator import Paginator, Page
 from .models import *
+from .forms import CommentForm
 
 
 # 一个Page中有  object_list代表当前页的所有对象
@@ -27,22 +28,59 @@ def index(request):
     typepage = request.GET.get("type")
     year = None
     month = None
+    category_id = None
     if typepage == "date":
         year = request.GET.get("year")
         month = request.GET.get("month")
         articles = Article.objects.filter(create_time__year=year, create_time__month=month).order_by("-create_time")
+    elif typepage == "category":
+        category_id = request.GET.get("category_id")
+        try:
+            category = Category.objects.get(id=category_id)
+            articles = category.article_set.all()
+        except Exception as e:
+            print(e)
+            return HttpResponse("分类不合法")
+    elif typepage == "tag":
+        tag_id = request.GET.get("tag_id")
+        try:
+            tag = Tag.objects.get(id=tag_id)
+            articles = tag.article_set.all()
+        except Exception as e:
+            print(e)
+            return HttpResponse("标签不合法")
     else:
         articles = Article.objects.all()
 
     paginator = Paginator(articles, 2)
     num = request.GET.get("pagenum", 1)
     page = paginator.get_page(num)
-    return render(request, 'index.html', {"ads": ads, "page": page, "type": typepage, "year": year, "month": month})
+    return render(request, 'index.html', locals())
+    # return render(request, 'index.html', {"ads": ads, "page": page, "type": typepage, "year": year, "month": month})
     # return HttpResponse("首页")
 
 
 def detail(request, detailid):
-    return render(request, 'single.html')
+    if request.method == "GET":
+        try:
+            article = Article.objects.get(id=detailid)
+            cf = CommentForm()
+            return render(request, 'single.html', locals())
+        except Exception as e:
+            return HttpResponse("文章不合法")
+    elif request.method == "POST":
+        cf = CommentForm(request.POST)
+        if cf.is_valid():
+            comment = cf.save(commit=False)
+            comment.article = Article.objects.get(id=detailid)
+            comment.save()
+            url = reverse("blogapp:detail", args=(detailid,))
+            return redirect(to=url)
+        else:
+            article = Article.objects.get(id=detailid)
+            cf = CommentForm()
+            errors = "输入信息有误"
+            return render(request, 'single.html', locals())
     # return HttpResponse("详情"+detailid)
 
 
