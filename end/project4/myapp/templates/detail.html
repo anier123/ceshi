@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+{% load myfun %}
+	{% block main %}
+		<div class="post single-post cate2 auth1">
+
+				<h4 class="post-date">{{articles.create_time|date:'Y年m月d日 H:i:s'}}</h4>
+				<h2 class="post-title">{{articles.name}}​</h2>
+				<div class="post-body">
+					<p>{{articles.body|safe}}</p>
+				</div>
+				<h5 class="post-tags">Tags: <span class="tags">
+					{% for t in articles.tags.all %}
+					<a href="#catalog.asp?tags=%E6%91%84%E5%BD%B1">{{t.name}}</a>
+					{% endfor %}
+				</span></h5>
+				<h6 class="post-footer">
+					发布:{{articles.name}} | 分类:{{articles.category.name}} | 评论:{{articles.comment1_set.count}} | 浏览:<span>{{articles.views}}</span>
+<!--					<script type="text/javascript"></script>-->
+						<br />
+					<!-- AD BEGIN -->
+					<br />
+				<div style="width:660px;" align="center">
+
+				</div>
+					<!-- AD END -->
+				</h6>
+
+		</div>
+<ul class="msg mutuality">
+	<li class="tbname">相关文章:</li>
+	<li class="msgarticle">
+	{% for a in arts %}
+		<p><a  href="#post/77.html">{{a.title}}</a>&nbsp;&nbsp;({{a.create_time|date:'Y年m月d日 H:i:s'}})</p>
+	{% endfor %}
+	</li>
+</ul>
+<ul  class="msg msghead">
+	<li class="tbname">留言列表:</li>
+</ul>
+<ins style="display:none;" id="AjaxCommentBegin"></ins>
+
+<ul class="msg" id="cmt1475">
+	{% for c in articles.comment1_set.all %}
+		<li class="msgname"><img class="avatar" src="http://cn.gravatar.com/avatar/e762b2d63651344d2ca3db6bcef8286b?s=40&d=mm" alt="" width="32"/>&nbsp;
+		<span class="commentname">
+			{{c.name}}
+		</span>
+		<br/>
+		<small>&nbsp;发布于&nbsp;{{c.create_time|date:'Y年m月d日 H:i:s'}}&nbsp;&nbsp;
+			<span class="revertcomment"><a href="#comment" onclick="RevertComment('1475')">回复该留言</a></span>
+		</small>
+	</li>
+	<li class="msgarticle">{{c.body}}</li>
+	{% endfor %}
+</ul>
+
+
+
+
+
+<div class="post" id="divCommentPost">
+	<p class="posttop"><a name="comment">发表留言:</a>
+		<small><a rel="nofollow" id="cancel-reply" href="#divCommentPost" style="display:none;">取消回复</a></small></p>
+
+
+	<form action="#" method="post" id="frmSumbit">
+		{% csrf_token %}
+			<div class="row">
+					<div class="col-md-4">
+							<label>{{cf.name.label}}</label>
+							{{cf.name}}
+					</div>
+					<div class="col-md-4">
+							<label>{{cf.email.label}}</label>
+							{{cf.email}}
+					</div>
+					<div class="col-md-4">
+							<label>{{cf.url.label}}</label>
+							{{cf.url}}
+					</div>
+					<div class="col-md-4">
+							<label>{{cf.num.label}}</label>
+							{{cf.num}}
+					</div>
+					<div class="col-md-12">
+							<label>{{cf.body.label}}</label>
+							{{cf.body}}
+							<br>
+							<br>
+							<button type="submit" class="comment-btn">发表</button>
+					</div>
+			</div>
+	</form>
+
+	<p class="postbottom">◎欢迎参与讨论，请在这里发表您的看法、交流您的观点。</p>
+<!--	<script language="JavaScript" type="text/javascript">LoadRememberInfo();</script>-->
+</div>
+    {% endblock %}
+
+
+
+
+
+
+
+

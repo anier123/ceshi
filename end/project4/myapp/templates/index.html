@@ -1,0 +1,47 @@
+{% extends 'base2.html'%}
+
+{% block main %}
+	{% for article in page %}
+	<div class="post multi-post cate4 auth1">
+		<h4 class="post-date">{{article.create_time|date:'Y年m月d日 H:i:s'}}</h4>
+		<h2 class="post-title"><a href="{% url 'blogapp:detail' article.id %}">{{article.title}}</a></h2>
+		<div class="post-body"><p>{{article.body|safe|truncatechars_html:20}}</p></div>
+		<h5 class="post-tags">Tags: <span class="tags">
+			{% for a in article.tags.all %}
+				<a href="#catalog.asp?tags=%E8%A7%89%E6%82%9F">{{a.name}}</a>
+			{% endfor %}
+			&nbsp;&nbsp;
+		</span></h5>
+		<h6 class="post-footer">
+			发布:{{article.name}} | 分类:{{article.category.name}} | 评论:{{article.comment1_set.count}} | 浏览:<span id="spn77"></span>
+			<script type="text/javascript">{{article.views}}</script> | <a href="{% url 'blogapp:detail' article.id %}">阅读全文 > </a>
+		</h6>
+	</div>
+
+	{% endfor %}
+{% endblock %}
+{% block table %}
+<div class="post pagebar">
+
+	{% if page.has_previous %}
+	<a href="/?pagenum={{page.previous_page_number}}&type={{typepage}}&year={{year}}&month={{month}}&category_id={{category_id}}&tag_id={{tag_id}}"><span class="page first-page">上一页</span></a>
+	{% endif %}
+
+	{% for pn in page.paginator.page_range %}
+	{% if pn == page.number %}
+	<span class="/?pagenum={{pn}}&type={{typepage}}&year={{year}}&month={{month}}&category_id={{category_id}}&tag_id={{tag_id}}">{{pn}}</span>
+	{% else %}
+        <a href="/?pagenum={{pn}}&type={{typepage}}&year={{year}}&month={{month}}&category_id={{category_id}}&tag_id={{tag_id}}"><span class="page">{{pn}}</span></a>
+	{% endif %}
+	{% endfor %}
+
+
+	{% if page.has_next %}
+        <a href="/?pagenum={{page.next_page_number}}&type={{typepage}}&year={{year}}&month={{month}}&category_id={{category_id}}&tag_id={{tag_id}}"><span class="page last-page">下一页</span></a>
+	{% endif %}
+</div>
+{% endblock %}
+
+
+
+

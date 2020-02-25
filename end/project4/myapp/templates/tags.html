@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+	{% block main %}
+		{% for a in article %}
+			<div class="post multi-post cate2 auth1">
+				<h4 class="post-date">{{a.create_time|date:'Y年m月d日 H:i:s'}}</h4>
+				<h2 class="post-title"><a href="#post/76.html">{{a.title}}</a></h2>
+				<div class="post-body">
+					<p>{{a.body|safe|truncatechars_html:20}}</p>
+				</div>
+				<h5 class="post-tags">Tags: <span class="tags">
+					{% for t in a.tags.all %}
+						<a href="#catalog.asp?tags=%E7%94%9F%E6%B4%BB">{{t.name}}</a>
+					{% endfor %}
+				</span></h5>
+				<h6 class="post-footer">
+					发布:{{a.name}} | 分类:{{a.category.name}} | 评论:{a.comment_set.count}} | 浏览:<span>{{a.views}}</span>
+					<script type="text/javascript"></script> | <a href="#post/76.html">阅读全文 > </a>
+				</h6>
+			</div>
+		{% endfor %}
+    {% endblock %}
+

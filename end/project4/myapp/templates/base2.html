@@ -1,0 +1,41 @@
+{% extends 'base.html'%}
+{% load myfun %}
+{% block aside %}
+<dl class="function" id="divSearchPanel">
+<dt class="function_t">搜索</dt>
+<dd class="function_c">
+<div><div style="padding:0.5em 0 0.5em 1em;">
+    <form method="get" action="/search/" target="_blank">
+        {% csrf_token %}
+        <input type="text" name="q" id="edtSearch" size="12" />
+        <input type="submit" value="搜索" name="btnPost" id="btnPost" />
+    </form>
+</div>
+</div>
+</dd>
+</dl>
+<dl class="function" id="divTags">
+    <dt class="function_t">按标签浏览</dt>
+    {% get_tag as tag %}
+    <dd class="function_c">
+        <ul>
+            {% for tags in tag %}
+                <li class="tag-name tag-name-size-2"><a href="/?type=tag&tag_id={{tags.id}}">{{tags.name}}</a></li>
+            {% endfor %}
+        </ul>
+    </dd>
+</dl>
+<dl class="function" id="divComments">
+    <dt class="function_t">最新留言</dt>
+    <dd class="function_c">
+        {% get_leave as leave %}
+
+    <ul>
+        {% for le in leave %}
+            <li style="text-overflow:ellipsis;"><a href="#">{{le.body}}</a></li>
+        {% endfor %}
+
+    </ul>>
+    </dd>
+</dl>
+{% endblock %}

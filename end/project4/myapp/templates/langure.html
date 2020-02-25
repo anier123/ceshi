@@ -1,0 +1,33 @@
+{% extends 'base.html'%}
+{% block main %}
+<div class="post" id="divCommentPost">
+	<p class="posttop"><a name="comment">发表留言:</a>
+	<form action="#" method="post" >
+		{% csrf_token %}
+			<div class="row">
+					<div class="col-md-4">
+							<label>{{cf.name.label}}</label>
+							{{cf.name}}
+					</div>
+					<div class="col-md-4">
+							<label>{{cf.email.label}}</label>
+							{{cf.email}}
+					</div>
+					<div class="col-md-4">
+							<label>{{cf.url.label}}</label>
+							{{cf.url}}
+					</div>
+					<div class="col-md-12">
+							<label>{{cf.body.label}}</label>
+							{{cf.body}}
+							<br>
+							<br>
+							<button type="submit" class="comment-btn">发表</button>
+					</div>
+			</div>
+	</form>
+
+	<p class="postbottom">◎欢迎参与讨论，请在这里发表您的看法、交流您的观点。</p>
+<!--	<script language="JavaScript" type="text/javascript">LoadRememberInfo();</script>-->
+</div>
+{% endblock %}
