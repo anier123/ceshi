@@ -1,5 +1,6 @@
 from django.db import models
 
+
 # Create your models here.
 
 
@@ -21,3 +22,10 @@ class Good(models.Model):
     def __unicode__(self):
         return self.name
 
+
+class GoodImg(models.Model):
+    img = models.ImageField(upload_to="goodimg", verbose_name="图片")
+    good = models.ForeignKey(Good, on_delete=models.CASCADE, verbose_name="商品", related_name="imgs")
+
+    def __str__(self):
+        return self.good.name
