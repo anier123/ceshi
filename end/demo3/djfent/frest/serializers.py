@@ -16,6 +16,64 @@ class CustomSerializer(serializers.RelatedField):
         return str(value.id) + "--" + value.name + "--" + value.desc
 
 
+class GoodImgSerializer(serializers.Serializer):
+    img = serializers.ImageField()
+    good = serializers.CharField(source="good.name")
+
+    def validate(self, attrs):
+        print("原始的", attrs)
+        try:
+            c = Good.objects.get(name=attrs["good"]["name"])
+        except:
+            raise serializers.ValidationError("输入有误")
+        attrs["good"] = c
+        print(attrs)
+        return attrs
+
+    def create(self, validated_data):
+        print("现在的", validated_data)
+        instance = GoodImg.objects.create(**validated_data)
+        return instance
+
+
+class GoodSerializer(serializers.Serializer):
+    name = serializers.CharField(max_length=20, min_length=3, error_messages={
+        "max_length": "长度过长",
+        "min_length": "长度过短"
+    })
+    imgs = GoodImgSerializer(label="图片", many=True, read_only=True)
+
+    # validate_category用来添加条件的，区分超级管理员和普通管理员权限
+    # validate_  下划线后的必须是外键名，参数名也必须是外键名
+    def validate_category(self, category):
+        try:
+            Category.objects.get(name=category["name"])
+        except:
+            raise serializers.ValidationError("不存在这个分类")
+        return category
+
+    # validate这个方法用来处理接收的数据
+    def validate(self, attrs):
+        print("现在的", attrs)
+        try:
+            c = Category.objects.get(name=attrs["category"]["name"])
+        except:
+            c = Category.objects.create(name=attrs["category"]["name"])
+        attrs["category"] = c
+        return attrs
+
+    def create(self, validated_data):
+        print("good参数", validated_data)
+        instance = Good.objects.create(**validated_data)
+        return instance
+
+    def update(self, instance, validated_data):
+        instance.name = validated_data.get("name", instance.name)
+        instance.category = validated_data.get("category", instance.category)
+        instance.save()
+        return instance
+
+
 class CategorySerializer(serializers.Serializer):
     """
     序列化类 决定了模型序列化细节
@@ -25,6 +83,7 @@ class CategorySerializer(serializers.Serializer):
         "max_length": "长度过长",
         "min_length": "长度过短"
     })
+    goods = GoodSerializer(many=True, read_only=True)
 
     def create(self, validated_data):
         """
@@ -73,24 +132,52 @@ class CategorySerializer1(serializers.ModelSerializer):
         fields = "__all__"
 
 
-class GoodImgSerializer(serializers.Serializer):
-    img = serializers.ImageField()
-    good = serializers.CharField(source="good.name")
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = "__all__"
 
     def validate(self, attrs):
-        print("原始的", attrs)
-        try:
-            c = Good.objects.get(name=attrs["good"]["name"])
-        except:
-            raise serializers.ValidationError("输入有误")
-        attrs["good"] = c
-        print(attrs)
+        from django.contrib.auth import hashers
+        attrs["password"] = hashers.make_password(attrs["password"])
+        return attrs
+
+
+class UserRegistSerializer(serializers.Serializer):
+    username = serializers.CharField(max_length=20, min_length=2, error_messages={
+        "max_length": "太长了",
+        "min_length": "太短了"
+    })
+    password = serializers.CharField(max_length=12, min_length=6, error_messages={
+        "max_length": "太长了",
+        "min_length": "太短了"
+    })
+    password2 = serializers.CharField(max_length=12, min_length=6, error_messages={
+        "max_length": "太长了",
+        "min_length": "太短了"
+    })
+
+    def validate_password2(self, data):
+        if data != self.initial_data["password"]:
+            raise serializers.ValidationError("两次密码不一致")
+        else:
+            return data
+
+    def validate(self, attrs):
+        # if attrs["password"] != attrs["password2"]:
+        #     raise serializers.ValidationError("两次密码不一致")
+        del attrs["password2"]
         return attrs
 
     def create(self, validated_data):
-        print("现在的", validated_data)
-        instance = GoodImg.objects.create(**validated_data)
-        return instance
+        return User.objects.create_user(username=validated_data.get("username"), email=validated_data.get("email"),
+                                        password=validated_data.get("password"))
+
+
+class OrderSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Order
+        fields = "__all__"
 
 
 class GoodSerializer1(serializers.ModelSerializer):
@@ -100,41 +187,3 @@ class GoodSerializer1(serializers.ModelSerializer):
     class Meta:
         model = Good
         fields = ("name", "desc", "category")
-
-
-class GoodSerializer(serializers.Serializer):
-    name = serializers.CharField(max_length=20, min_length=3, error_messages={
-        "max_length": "长度过长",
-        "min_length": "长度过短"
-    })
-    category = CategorySerializer(label="分类")
-
-    # validate_category用来添加条件的，区分超级管理员和普通管理员权限
-    # validate_  下划线后的必须是外键名，参数名也必须是外键名
-    def validate_category(self, category):
-        try:
-            Category.objects.get(name=category["name"])
-        except:
-            raise serializers.ValidationError("不存在这个分类")
-        return category
-
-    # validate这个方法用来处理接收的数据
-    def validate(self, attrs):
-        print("现在的", attrs)
-        try:
-            c = Category.objects.get(name=attrs["category"]["name"])
-        except:
-            c = Category.objects.create(name=attrs["category"]["name"])
-        attrs["category"] = c
-        return attrs
-
-    def create(self, validated_data):
-        print("good参数", validated_data)
-        instance = Good.objects.create(**validated_data)
-        return instance
-
-    def update(self, instance, validated_data):
-        instance.name = validated_data.get("name", instance.name)
-        instance.category = validated_data.get("category", instance.category)
-        instance.save()
-        return instance
